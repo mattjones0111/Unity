@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,10 +28,13 @@ public sealed class AzureAudioStore : IStoreAudio
         }
         
         BlobServiceClient client = new(connectionString);
+        
         BlobContainerClient containerClient = client.GetBlobContainerClient("audio");
+        await containerClient.CreateIfNotExistsAsync(cancellationToken: ct);
+        
         AppendBlobClient? appendClient = containerClient.GetAppendBlobClient(id.ToString());
-
         await appendClient.CreateIfNotExistsAsync(cancellationToken: ct);
+        
         int maxBlockSize = appendClient.AppendBlobMaxAppendBlockBytes;
         long bytesLeft = stream.Length;
         byte[] buffer = new byte[maxBlockSize];

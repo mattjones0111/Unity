@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FastEndpoints;
-using FluentValidation;
 using Marten;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,24 +30,5 @@ public class Create : Endpoint<Contracts.V1.Artist, Created>
 
         var url = $"/artists/{req.Id}";
         return TypedResults.Created(url);
-    }
-}
-
-public class ArtistRegistry : MartenRegistry
-{
-    public ArtistRegistry()
-    {
-        For<Contracts.V1.Artist>()
-            .DocumentAlias("artist")
-            .Identity(x => x.Id);
-    }
-}
-
-public class ArtistValidator : Validator<Contracts.V1.Artist>
-{
-    public ArtistValidator()
-    {
-        RuleFor(x => x.Name)
-            .NotEmpty();
     }
 }

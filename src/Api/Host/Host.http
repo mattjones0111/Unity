@@ -17,10 +17,11 @@ PUT {{Host_HostAddress}}/audio-items
 Content-Type: application/json
 
 {
-  "Title": "hi there",
+  "Title": "Got My Mind Set On You",
   "Artists": [
     { "Name": "George Harrison", "Id": "{{artistId}}" }
-  ]
+  ],
+  "CategoryPaths": ["/music"]
 }
 
 > {%
@@ -37,5 +38,9 @@ Content-Disposition: application/octet-stream; name="audio"; filename="1ktone.wa
 
 < ./1ktone.wav
 --WebAppBoundary--
+
+###
+
+DELETE {{Host_HostAddress}}{{audioItemLocation}}
 
 ###

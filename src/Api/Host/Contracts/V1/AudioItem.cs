@@ -8,7 +8,7 @@ public record AudioItem(
     string Title,
     AudioItemArtist[] Artists,
     Marker[] Markers,
-    string[] Categories);
+    string[] CategoryPaths);
 
 public record AudioItemArtist(
     Guid Id,

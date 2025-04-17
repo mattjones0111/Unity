@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Api.Host.Contracts.V1;
+using Api.Host.Data;
 using FastEndpoints;
 using FluentValidation;
 
