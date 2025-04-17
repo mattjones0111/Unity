@@ -505,4 +505,4 @@ $RECYCLE.BIN/
 *.swp
 
 # Critter stack generated handlers
-/src/Api/Api/Host/Internal
+/src/Api/Host/Internal

@@ -1,0 +1,77 @@
+@Host_HostAddress = http://localhost:5178
+
+PUT {{Host_HostAddress}}/uploads
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: application/octet-stream; name="audio"; filename="1ktone.wav"
+
+< ./1ktone5s.pcm
+--WebAppBoundary--
+
+> {%
+    client.global.set("itemId", response.headers.valueOf("Location").split("/")[2]);
+    client.global.set("part0", response.headers.valueOf("x-audio-block-id"));
+%}
+
+###
+
+POST {{Host_HostAddress}}/uploads/{{itemId}}/blocks/1
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: application/octet-stream; name="audio"; filename="1ktone.wav"
+
+< ./1ktone5s.pcm
+--WebAppBoundary--
+
+> {%
+    client.global.set("part1", response.headers.valueOf("x-audio-block-id"));
+%}
+
+###
+
+POST {{Host_HostAddress}}/uploads/{{itemId}}/complete
+Content-Type: application/json
+
+{
+  "blockIds": [
+    "{{part0}}",
+    "{{part1}}"
+  ]
+}
+
+###
+
+PUT {{Host_HostAddress}}/artists
+Content-Type: application/json
+
+{
+  "name": "Katrina and The Waves"
+}
+
+> {%
+    client.global.set("artistId", response.headers.valueOf("Location").split("/")[2]);
+%}
+
+###
+
+PUT {{Host_HostAddress}}/audio-items
+Content-Type: application/json
+
+{
+  "uploadId": "{{itemId}}",
+  "audioItem": {
+    "title": "Peaches and Regalia",
+    "artists": [
+      { "id": "{{artistId}}", "name": "Katrina and The Waves" }
+    ],
+    "categoryPaths": [ "/music" ]
+  }
+}
+
+###
+
+GET {{Host_HostAddress}}/audio-items?category=%2Fmusic
+Accept: application/json
+
