@@ -1,10 +1,12 @@
-﻿using Api.Features.ProgrammeTemplates;
+﻿using Api.Features.Channels;
+using Api.Features.ProgrammeTemplates;
 using Contracts;
 using JasperFx;
 using JasperFx.CodeGeneration;
 using Marten;
 using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Weasel.Core;
 
@@ -28,15 +30,16 @@ public static class CritterStackBootstrapping
                 enumStorage: EnumStorage.AsString,
                 configure: opt =>
                 {
-                    opt.AllowOutOfOrderMetadataProperties = true;
+                    opt.AllowOutOfOrderMetadataProperties = false;
                     opt.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                    opt.TypeInfoResolver = new PolymorphicTypeResolver();
+                    opt.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 });
 
             opts.Connection(connectionString);
             opts.DatabaseSchemaName = "scheduling";
 
             opts.Schema.Include<ProgrammeTemplateRegistry>();
+            opts.Schema.Include<ChannelRegistry>();
         })
         .UseLightweightSessions()
         .ApplyAllDatabaseChangesOnStartup();

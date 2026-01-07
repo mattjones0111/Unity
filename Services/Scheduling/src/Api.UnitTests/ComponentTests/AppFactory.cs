@@ -33,12 +33,14 @@ public class AppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
+        var connectionString = postgreSqlContainer?.GetConnectionString();
+        
         builder.ConfigureHostConfiguration(webBuilder =>
         {
             webBuilder.AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                { HostDefaults.EnvironmentKey,    "Development"                              },
-                { "ConnectionStrings:scheduling", postgreSqlContainer?.GetConnectionString() }
+            { 
+                { HostDefaults.EnvironmentKey,    "Development"    },
+                { "ConnectionStrings:scheduling", connectionString }
             });
         });
 

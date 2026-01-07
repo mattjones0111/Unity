@@ -19,8 +19,9 @@ public class CreateTemplateTest(AppFactory appFactory)
     {
         var jsonSettings = new JsonSerializerOptions
         {
-            TypeInfoResolver = new PolymorphicTypeResolver()
+            AllowOutOfOrderMetadataProperties = false
         };
+        jsonSettings.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
 
         var client = RestService.For<ISchedulingClient>(
             factory.CreateClient(),
@@ -35,9 +36,11 @@ public class CreateTemplateTest(AppFactory appFactory)
             Duration: TimeSpan.FromHours(1),
             Items:
             [
-                new CommentTemplateItem(Guid.NewGuid(), "This is a comment.")
+                new CommentTemplateItem("This is a comment.")
             ]);
 
+        var s = JsonSerializer.Serialize(template, jsonSettings);
+        
         var response = await client.CreateProgrammeTemplateAsync(template);
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -48,5 +51,6 @@ public class CreateTemplateTest(AppFactory appFactory)
 
         readBack.IsSuccessful.Should().BeTrue();
         readBack.Content.Should().NotBeNull();
+        readBack.Content.Items.Single().Should().BeOfType<CommentTemplateItem>();
     }
 }

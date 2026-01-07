@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Text.Json.Serialization;
 
 namespace Contracts;
 
@@ -15,25 +15,26 @@ public record ProgrammeTemplate(
     TemplateItem[] Items,
     Dictionary<string, string>? Properties = null);
 
-public abstract record TemplateItem(
-    Guid Id,
+[JsonDerivedType(typeof(CommentTemplateItem), "comment")]
+[JsonDerivedType(typeof(AudioCriteriaTemplateItem), "audio-criteria")]
+[JsonDerivedType(typeof(AudioItemTemplateItem), "audio-item")]
+public record TemplateItem(
+    string Description,
     TimeSpan Duration);
 
 public record CommentTemplateItem(
-    Guid Id,
     string Comment)
-    : TemplateItem(Id, TimeSpan.Zero);
+    : TemplateItem(Comment, TimeSpan.Zero);
 
 public record AudioCriteriaTemplateItem(
-    Guid Id,
     string Query)
-    : TemplateItem(Id, TimeSpan.Zero);
+    : TemplateItem(Query, TimeSpan.Zero);
 
 public record AudioItemTemplateItem(
-    Guid Id,
     TimeSpan Duration,
-    Guid AudioItemId)
-    : TemplateItem(Id, Duration);
+    Guid AudioItemId,
+    string Title)
+    : TemplateItem(Title, Duration);
 
 public record ScheduleTemplate(
     Guid Id,

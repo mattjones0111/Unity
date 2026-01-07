@@ -57,7 +57,7 @@ public static class FastEndpointExtensions
         options.PropertyNameCaseInsensitive = true;
         options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-        options.TypeInfoResolver = new PolymorphicTypeResolver();
+        options.AllowOutOfOrderMetadataProperties = false;
     }
 }
 
